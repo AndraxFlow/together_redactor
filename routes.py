@@ -18,3 +18,5 @@ async def process_item(item: Item):
         "total_price": total_price,
         "message": "Item processed successfully"
     }
+
+# ЗДЕСЬ БУДУТ ВЕЛИКИЕ СВЕРШЕНИЯ
