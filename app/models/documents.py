@@ -1,6 +1,7 @@
 import sqlalchemy
 from app.db.base import metadata
 
+
 documents = sqlalchemy.Table(
     "documents",
     metadata,
@@ -14,6 +15,7 @@ documents = sqlalchemy.Table(
         onupdate=sqlalchemy.func.now(),
     ),
     sqlalchemy.Column("owner_id", sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"), nullable=False),
+    sqlalchemy.Column("content", sqlalchemy.LargeBinary, nullable=True),
 )
 
 documents_snapshot = sqlalchemy.Table(
@@ -56,5 +58,33 @@ document_updates = sqlalchemy.Table(
         sqlalchemy.DateTime(),
         server_default=sqlalchemy.func.now(),
         nullable=False,
+    ),
+)
+
+document_access = sqlalchemy.Table(
+    "document_access",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
+
+    sqlalchemy.Column(
+        "document_id",
+        sqlalchemy.Integer,
+        sqlalchemy.ForeignKey("documents.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    ),
+
+    sqlalchemy.Column(
+        "user_id",
+        sqlalchemy.Integer,
+        sqlalchemy.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    ),
+
+    sqlalchemy.Column(
+        "role",
+        sqlalchemy.String(20),
+        nullable=False,  # owner / editor / viewer
     ),
 )

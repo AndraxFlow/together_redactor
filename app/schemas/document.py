@@ -18,3 +18,4 @@ class DocumentResponse(BaseModel):
     owner_id: int
     created_at: datetime
     updated_at: Optional[datetime] = None
+    content: Optional[bytes] = None

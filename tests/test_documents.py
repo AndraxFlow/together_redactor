@@ -24,7 +24,13 @@ def build_test_client() -> TestClient:
 
 def _register_and_login(client: TestClient, email: str, password: str) -> str:
     client.post("/auth/register", json={"email": email, "password": password})
-    login_response = client.post("/auth/login", json={"email": email, "password": password})
+
+    login_response = client.post(
+        "/auth/login",
+        data={"username": email, "password": password},
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+    )
+
     return login_response.json()["access_token"]
 
 

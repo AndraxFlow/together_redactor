@@ -40,6 +40,10 @@ test: ## Run tests
 db-shell: ## Open psql inside db container
 	$(COMPOSE) exec $(DB_SERVICE) psql -U $(DB_USER) -d $(DB_NAME)
 
+
+# new-migration: ## Create new Alembic migration 
+#	$(COMPOSE) exec $(APP_SERVICE) alembic revision --autogenerate -m ""
+
 migrate: ## Apply Alembic migrations to head
 	$(COMPOSE) exec $(APP_SERVICE) alembic upgrade head
 

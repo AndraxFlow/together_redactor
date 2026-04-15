@@ -40,7 +40,8 @@ def test_login() -> None:
 
     response = client.post(
         "/auth/login",
-        json={"email": "test@test.com", "password": "123456"},
+        data={"username": "test@test.com", "password": "123456"},
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
     assert response.status_code == 200
     assert response.json()["token_type"] == "bearer"
@@ -52,7 +53,8 @@ def test_protected_me() -> None:
     client.post("/auth/register", json={"email": "test@test.com", "password": "123456"})
     login_response = client.post(
         "/auth/login",
-        json={"email": "test@test.com", "password": "123456"},
+        data={"username": "test@test.com", "password": "123456"},
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
     token = login_response.json()["access_token"]
 

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<body>
+<button onclick="connect()">Connect</button>
+<button onclick="send()">Send update</button>
+
+<script>
+let ws;
+
+function connect() {
+    ws = new WebSocket("ws://localhost:8000/ws/8?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImV4cCI6MTc3NjE5NTIwN30.QpEpRJPnhwpm_fD9kT5eTfwQCpmUQ5sofUaxMcy7nJ8");
+
+    ws.onopen = () => console.log("connected");
+
+    ws.onmessage = async (event) => {
+        const buf = await event.data.arrayBuffer();
+        console.log("received bytes:", new Uint8Array(buf));
+    };
+
+    ws.onclose = () => console.log("closed");
+}
+
+function send() {
+    // ❌ не CRDT, но для теста соединения
+    ws.send(new Uint8Array([1,2,3]));
+}
+</script>
+</body>
+</html>

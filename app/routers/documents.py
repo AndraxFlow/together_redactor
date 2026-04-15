@@ -9,6 +9,9 @@ from app.services.document_service import (
     get_documents,
     update_document,
 )
+from app.services.access_service import get_user_role
+from app.models.documents import document_access
+from app.db.session import engine
 
 
 router = APIRouter(tags=["documents"])
@@ -54,3 +57,16 @@ def delete_document_endpoint(
     current_user: dict = Depends(get_current_user),
 ) -> None:
     delete_document(current_user, document_id)
+
+@router.post("/{document_id}/share")
+def share_document(document_id: int, user_id: int, role: str):
+    with engine.begin() as conn:
+        conn.execute(
+            document_access.insert().values(
+                document_id=document_id,
+                user_id=user_id,
+                role=role,
+            )
+        )
+
+    return {"status": "shared", "role": role}

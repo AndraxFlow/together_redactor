@@ -62,7 +62,7 @@ def create_user(email: str, password: str, db_engine: Optional[Engine] = None) -
         with current_engine.begin() as connection:
             created_user = connection.execute(query).mappings().first()
     except IntegrityError as exc:
-        raise ValueError("User with this email already exists") from exc
+        raise ValueError(f"User with this email already exists {exc}") from exc
     return dict(created_user)
 
 
