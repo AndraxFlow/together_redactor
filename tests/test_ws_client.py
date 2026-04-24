@@ -77,8 +77,8 @@ async def main():
     u1 = create_user("aboba1@test.com")
     u2 = create_user("aboba2@test.com")
 
-    t1 = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImV4cCI6MTc3NjE5NTIwN30.QpEpRJPnhwpm_fD9kT5eTfwQCpmUQ5sofUaxMcy7nJ8'
-    t2 = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMSIsImV4cCI6MTc3NjE5NTIyNn0.NT9LCLYwVMweuknz-Rt_vpr6qicY31JQFV3h8EcTN3g'
+    t1 = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImV4cCI6MTc3NjI0ODUyNn0.2mpeMhTI-YbomOrbq4qk7kG07o5F530v7D1LTgq2NLY'
+    t2 = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMSIsImV4cCI6MTc3NjI0ODU0OX0.-w6Njf8H3suwXjTCajDcnpe3SbcKH4fMu8Z8UxkaO9M'
 
     doc_id = 8
 

@@ -8,7 +8,7 @@ from app.db.session import engine
 from app.models.documents import documents
 from app.services.access_service import get_user_role, can_edit
 from app.models.documents import document_access
-
+from app.models.documents import documents_snapshot, document_updates
 
 def _resolve_engine(db_engine: Optional[Engine]) -> Engine:
     return db_engine or engine
@@ -66,6 +66,28 @@ def create_document(user: dict, data: dict, db_engine: Optional[Engine] = None) 
         )
 
     return dict(result)
+
+def save_update(document_id: int, data: bytes):
+    with engine.begin() as conn:
+        conn.execute(
+            document_updates.insert().values(
+                document_id=document_id,
+                data=data,
+            )
+        )
+
+def get_updates(document_id: int, after_id: int | None = None):
+    with engine.connect() as conn:
+        query = select(document_updates).where(
+            document_updates.c.document_id == document_id
+        )
+
+        if after_id:
+            query = query.where(document_updates.c.id > after_id)
+
+        query = query.order_by(document_updates.c.id.asc())
+
+        return conn.execute(query).mappings().all()
 
 def get_documents(user: dict, db_engine=None) -> list[dict]:
     current_engine = _resolve_engine(db_engine)
@@ -160,4 +182,13 @@ def get_document_from_db(document_id: int):
     with engine.connect() as conn:
         return conn.execute(
             documents.select().where(documents.c.id == document_id)
+        ).mappings().first()
+    
+def get_latest_snapshot(document_id: int):
+    with engine.connect() as conn:
+        return conn.execute(
+            select(documents_snapshot)
+            .where(documents_snapshot.c.document_id == document_id)
+            .order_by(documents_snapshot.c.id.desc())
+            .limit(1)
         ).mappings().first()
