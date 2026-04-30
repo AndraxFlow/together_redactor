@@ -12,6 +12,11 @@ class DocumentUpdate(BaseModel):
     title: Optional[str] = None
 
 
+class DocumentShare(BaseModel):
+    email: str
+    role: str  # "viewer", "editor"
+
+
 class DocumentResponse(BaseModel):
     id: int
     title: str

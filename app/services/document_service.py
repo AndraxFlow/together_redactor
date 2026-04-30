@@ -166,6 +166,43 @@ def delete_document(user: dict, document_id: int, db_engine: Optional[Engine] = 
         conn.execute(delete(documents).where(documents.c.id == document_id))
 
 
+def grant_access(user: dict, document_id: int, email: str, role: str, db_engine: Optional[Engine] = None):
+    current_engine = _resolve_engine(db_engine)
+
+    _, user_role = _get_accessible_document(user, document_id, current_engine)
+
+    if user_role != "owner":
+        raise HTTPException(status_code=403, detail="Only owner can share")
+
+    # Найти user по email
+    from app.services.auth_service import get_user_by_email
+    target_user = get_user_by_email(email)
+    if not target_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Проверить, что role valid
+    if role not in ("viewer", "editor"):
+        raise HTTPException(status_code=400, detail="Invalid role")
+
+    # Добавить или обновить доступ
+    with current_engine.begin() as conn:
+        # Удалить существующий
+        conn.execute(
+            delete(document_access).where(
+                document_access.c.document_id == document_id,
+                document_access.c.user_id == target_user["id"]
+            )
+        )
+        # Добавить новый
+        conn.execute(
+            document_access.insert().values(
+                document_id=document_id,
+                user_id=target_user["id"],
+                role=role
+            )
+        )
+
+
 # =========================
 # SNAPSHOT STORAGE (OK оставить здесь)
 # =========================

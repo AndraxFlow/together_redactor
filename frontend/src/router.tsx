@@ -11,7 +11,11 @@ import ProtectedRoute from "./routes/ProtectedRoute"
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to="/documents" />,
+    element: (
+      <ProtectedRoute>
+        <HomePage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/login",

@@ -4,7 +4,7 @@ import websockets
 from y_py import YDoc, apply_update, encode_state_as_update
 
 BASE = "http://localhost:8000"
-WS = "ws://localhost:8000/ws"
+WS = "ws://localhost/ws"
 
 
 def create_user(email):

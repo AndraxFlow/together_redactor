@@ -50,7 +50,7 @@
 - `GET /auth/me` - защищенный endpoint с `Authorization: Bearer <token>`
 
 Для WebSocket токен передается как query-параметр:
-`ws://localhost:8000/ws/<document_id>?token=<JWT>`
+`ws://localhost/ws/<document_id>?token=<JWT>`
 
 routers - ручки
 models - модели ORM 

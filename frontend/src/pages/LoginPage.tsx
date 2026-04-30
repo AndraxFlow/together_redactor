@@ -1,7 +1,15 @@
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../auth/useAuth";
 import { LoginForm } from "../components/LoginForm";
 import { RegisterForm } from "../components/RegisterForm";
 
 export function LoginPage() {
+  const { user } = useAuth();
+
+  if (user) {
+    return <Navigate to="/" replace />;
+  }
+
   return (
     <main className="page auth-page">
       <section className="hero card">

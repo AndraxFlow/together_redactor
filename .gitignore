@@ -9,3 +9,5 @@ __pycache__/
 *.db
 *.sqlite3
 *.log
+./node_modules
+frontend/node_modules

@@ -1,13 +1,14 @@
 from fastapi import APIRouter, Depends, status
 
 from app.dependencies import get_current_user
-from app.schemas.document import DocumentCreate, DocumentResponse, DocumentUpdate
+from app.schemas.document import DocumentCreate, DocumentResponse, DocumentUpdate, DocumentShare
 from app.services.document_service import (
     create_document,
     delete_document,
     get_document_by_id,
     get_documents,
     update_document,
+    grant_access,
 )
 from app.services.access_service import get_user_role
 from app.models.documents import document_access
@@ -58,15 +59,13 @@ def delete_document_endpoint(
 ) -> None:
     delete_document(current_user, document_id)
 
-@router.post("/{document_id}/share")
-def share_document(document_id: int, user_id: int, role: str):
-    with engine.begin() as conn:
-        conn.execute(
-            document_access.insert().values(
-                document_id=document_id,
-                user_id=user_id,
-                role=role,
-            )
-        )
 
-    return {"status": "shared", "role": role}
+@router.post("/{document_id}/share", status_code=status.HTTP_200_OK)
+def share_document_endpoint(
+    document_id: int,
+    payload: DocumentShare,
+    current_user: dict = Depends(get_current_user),
+) -> dict:
+    grant_access(current_user, document_id, payload.email, payload.role)
+    return {"message": "Access granted"}
+        

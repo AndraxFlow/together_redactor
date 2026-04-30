@@ -5,14 +5,21 @@ import { useNavigate } from "react-router-dom"
 export default function DocumentsPage() {
   const [docs, setDocs] = useState<any[]>([])
   const [title, setTitle] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const navigate = useNavigate()
 
   async function load() {
     try {
+      setLoading(true)
+      setError(null)
       const data = await getDocuments()
       setDocs(data)
     } catch (e) {
       console.error(e)
+      setError("Не удалось загрузить документы")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -23,26 +30,35 @@ export default function DocumentsPage() {
   async function handleCreate() {
     if (!title.trim()) return
 
-    const doc = await createDocument(title)
-    setTitle("")
-    load()
-
-    // сразу перейти в редактор
-    navigate(`/editor/${doc.id}`)
+    try {
+      const doc = await createDocument(title)
+      setTitle("")
+      load()
+      // сразу перейти в редактор
+      navigate(`/editor/${doc.id}`)
+    } catch (e) {
+      console.error(e)
+      setError("Не удалось создать документ")
+    }
   }
 
   return (
     <div>
-      <h2>Documents</h2>
+      <h2>Документы</h2>
 
       <div style={{ marginBottom: 20 }}>
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Document title"
+          placeholder="Название документа"
         />
-        <button onClick={handleCreate}>Create</button>
+        <button onClick={handleCreate} disabled={!title.trim()}>Создать</button>
       </div>
+
+      {loading && <p>Загрузка...</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+
+      {!loading && !error && docs.length === 0 && <p>У вас нет документов. Создайте первый!</p>}
 
       <ul>
         {docs.map((doc) => (
